@@ -6,13 +6,8 @@
 
 """Defines output channels for gsync"""
 
-import os, sys, inspect, re, codecs
+import os, sys, inspect, re
 from datetime import datetime
-
-# Make stdout unbuffered.
-sys.stdout = (codecs.getwriter(sys.stdout.encoding))\
-    (os.fdopen(sys.stdout.fileno(), "w", 0), "replace")
-
 
 class Channel(object):
     """Base channel class to define the interface"""
@@ -44,6 +39,7 @@ class Channel(object):
 
         if self._priority >= priority:
             sys.stdout.write(u"%s\n" % unicode(msg))
+            sys.stdout.flush()
 
 class Debug(Channel):
     """
@@ -127,7 +123,7 @@ class Itemize(object):
     def __call__(self, changes, filename):
         sys.stdout.write(u"%11s %s\n" % \
             (unicode(changes[:11]), unicode(filename)))
-
+        sys.stdout.flush()
 
 class Progress(object):
     """
@@ -160,6 +156,7 @@ class Progress(object):
                 self.bytes_written, self.percentage, unicode(self.rate()),
                 u"%d:%02d:%02d" % (hrs, mins, secs)
             ))
+            sys.stdout.flush()
         
     def __call__(self, status):
         self.time_taken = (datetime.now() - self._start).seconds
@@ -204,7 +201,7 @@ class Progress(object):
         if self._enable_output:
             self.write()
             sys.stdout.write(u"\n")
-
+            sys.stdout.flush()
 
 class Critical(object):
     """
