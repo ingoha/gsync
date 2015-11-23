@@ -383,15 +383,13 @@ class Drive(object):
 
         yield self._service
 
-    def __del__(self): # pragma: no cover
+    def _save_credentials(self):
         debug("Saving credentials...")
         credentials = self._credentials
         if credentials:
             storage = self._get_credential_storage()
             if storage is not None:
                 storage.put(credentials)
-
-        debug("My pid = %d" % os.getpid())
 
     def _get_config_dir(self, subdir = None):
         """Returns the path to the gsync config directory"""
@@ -493,6 +491,7 @@ class Drive(object):
             raise ExchangeError
 
         self._credentials = credentials
+        self._save_credentials()
 
         return credentials
 
