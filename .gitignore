@@ -13,3 +13,7 @@ MANIFEST
 
 .DS_Store
 *~
+
+.project
+.pydevproject
+.settings/
